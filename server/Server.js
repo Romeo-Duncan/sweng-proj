@@ -1,74 +1,77 @@
+import BodyParser from "body-parser"
 import Express from "express"
 import Mongodb from "mongodb"
 import Dotenv from "dotenv"
 import Cors from "cors"
 
 //Controllers
+import InventoryController from "./controllers/InventoryController.js"
 import UserController from "./controllers/UserController.js"
 
 Dotenv.config()
 
 const mongoClient = Mongodb.MongoClient
-const port = process.env.SERVER_PORT
+const port = process.env.SERVER_PORT || 8000
 const Router = Express.Router()
 const app = Express()
 
 function createAppRoutes(){
-    const routeCallbacks = [
-        {
-            route : "/log-in",
-            callback : UserController.onLoginRequest
-        }
-    ]
-
-    function callControllerMethod(method) {
+    function createRequestCallback(callback){
         return (req, res) => {
-            try {             
-                method(req, res);
+            try {   
+                res.header("Access-Control-Allow-Origin", "*")
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")  
+                callback(req, res)
             } catch (error) {
                 res.status(500).json({ error : err.message })
             }
         }
     }
 
-    routeCallbacks.forEach(function(routeCallbackInfo){
-        Router.route(routeCallbackInfo.route).post(callControllerMethod(routeCallbackInfo.callback))
-    })
+   
+    app.post("/api/get-users-data", createRequestCallback(UserController.onGetUsersDataRequest))
+    app.post("/api/create-user", createRequestCallback(UserController.onCreateUserRequest))
+    app.post("/api/log-in", createRequestCallback(UserController.onLoginRequest))
+
+    app.post("/api/get-items", createRequestCallback(InventoryController.onGetItemsRequest))
 }
 
 function initControllers(client){
-    [UserController].forEach(function(controller){
-        controller.init(client)
-    })    
+    const controllers = [UserController, InventoryController]
+
+    controllers.forEach(
+        (controller) => {
+            controller.init(client)
+        }
+    )    
 }
 
 function initMongoClient(){
-    mongoClient.connect(
+    return mongoClient.connect(
         process.env.DATABASE_URI,
         {
             maxPoolSize: 50,
             wtimeoutMS: 2500,
             useNewUrlParser:true
         }
-    ) .catch(err => {
+    ).catch(err => {
         console.error(err.stack)
         process.exit(1)
-    }) .then(async client => {
-        initControllers(client)
-    
-        app.listen(port, () => {
-            console.log("Port Created")
-        })
-    });
+    })
 }
 
 function initApp(){
-    app.use("/api/v1", Router)
+    app.use("/api", Router)
     app.use(Express.json())
     app.use(Cors())
+    app.use(BodyParser.urlencoded({ extended: false }))
+
+    app.listen(port, () => {
+        console.log("Port Created")
+    })    
 }
 
-createAppRoutes()
-
-initApp()
 initMongoClient()
+    .then(initControllers)
+    .then(initApp)
+    .then(createAppRoutes)

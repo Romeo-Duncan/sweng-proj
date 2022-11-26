@@ -1,22 +1,36 @@
-import BaseDAO from "./BaseDao.js"
+import BaseDAO from "./BaseDAO.js"
 
 class UsersDAO extends BaseDAO {
-    async createUser(username, password, type) {
-        try {
-            return await this.collection.insertOne({
-                username : username,
-                password : password,
-                type : type
-            });
-        } catch (error) {
-            console.log(error.message);
-        }
+    async createUser(username, password, type){
+        const createPromise = new Promise((resolve) => {
+            this.collection.distinct("username", { username : username }).then((documentsWithUsername) => {
+                if (documentsWithUsername.length > 0){
+                    resolve(false)
+                }else{
+                    this.collection.insertOne({
+                        username : username,
+                        password : password,
+                        type : type
+                    }).then(() => resolve(true))
+                }
+            })                
+        })
+            
+        return createPromise      
     }
 
     async verifyLoginRequest(username, password) {        
         const documentsWithLoginInfo = await this.collection.distinct("type", { username : username, password : password })
 
         return documentsWithLoginInfo.length > 0 && documentsWithLoginInfo[0]
+    }
+
+    async getUsersData(){
+        return this.collection.aggregate([
+            { $match : { $or: [ { type : "Employee" }, { type : "Customer" } ] } },
+            { $sort : { type : -1 } },            
+            { $unset : [ "_id" ] }
+        ]).toArray()
     }
 }
 

@@ -3,7 +3,7 @@ export default class BaseController {
         this.DAO = DAO
     }
 
-    init(client){
+    async init(client){
         this.DAO.load(client)
     }
 }
