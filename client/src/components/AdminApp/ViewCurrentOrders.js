@@ -100,11 +100,11 @@ function OrderTable(props){
             <Table responsive striped bordered hover>
                 <thead>
                     <tr>
-                    <th>Tracking Number</th>
-                    <th>Customer</th>
-                    <th>Date Placed</th>
+                    <th class="fw-bolder">Tracking Number</th>
+                    <th class="fw-bolder">Customer</th>
+                    <th class="fw-bolder">Date Placed</th>
                     {
-                        props.assigned && <th>Status</th>
+                        props.assigned && <th class="fw-bolder">Status</th>
                     }                    
                     </tr>
                 </thead>
@@ -114,13 +114,13 @@ function OrderTable(props){
                         props.orderData.map(order => {
                             return(
                                 <tr>
-                                    <td>{order.orderId}</td>
-                                    <td>{order.customerData[0].username}</td>
-                                    <td>{(new Date(order.time)).toLocaleString()}</td>
+                                    <td class="fw-light">{order.orderId}</td>
+                                    <td class="fw-light">{order.customerData[0].username}</td>
+                                    <td class="fw-light">{(new Date(order.time)).toLocaleString()}</td>
                                     {
                                         props.assigned 
                                         && 
-                                        <td>
+                                        <td class="fw-light">
                                             <DropdownButton 
                                                 title={Statuses[order.status]} 
                                                 id="bg-nested-dropdown" 
@@ -143,9 +143,10 @@ function OrderTable(props){
                                     {
                                         !props.assigned 
                                         &&
+                                        <td>
                                         <>
                                             <Button 
-                                                variant='bg-primary rounded-pill fw-bold'
+                                                variant='primary rounded-pill fw-bold'
                                                 onClick={() => {
                                                     props.onAssigned(order.orderId)
                                                 }}                       
@@ -153,13 +154,14 @@ function OrderTable(props){
                                                 Assign
                                             </Button>  
                                         </>
+                                        </td>
                                     }   
 
                                      <td>
                                         <Button 
                                             variant='primary rounded-pill fw-bold'
                                             onClick={() => {
-                                                setOrderDetails(order.orderData)
+                                                setOrderDetails(order)
                                                 setDetailsShow(true)
                                             }}                       
                                         >
@@ -193,30 +195,50 @@ function ViewCurrentOrders(props) {
 
     return (
         <>
-            <div>
-                Unassigned Orders
-            </div>
+            {
+                unassignedOrderData.length > 0 
+                && 
+                <>
+                    <div class="fs-4 mb-3">
+                        Unassigned Orders:
+                    </div>
 
-            <OrderTable 
-                orderData={unassignedOrderData} 
-                assigned={false}
-                onAssigned={
-                    (orderId) => {
-                        setAssigmentShow(true)
-                        setOrderId(orderId)
-                    }
-                }
-            />
+                    <OrderTable 
+                        orderData={unassignedOrderData} 
+                        assigned={false}
+                        onAssigned={
+                            (orderId) => {
+                                setAssigmentShow(true)
+                                setOrderId(orderId)
+                            }
+                        }
+                    />
 
-            <div class="mt-5">
-                Assigned Orders
-            </div>
-
-            <OrderTable 
-                orderData={assignedOrderData} 
-                onOrderStatusChanged={props.onOrderStatusChanged}
-                assigned={true}
-            />
+                    <hr class="mt-5 mb-5"/>
+                </>
+            }
+            {
+                 assignedOrderData.length > 0 
+                 &&
+                 
+                 <>
+                    <div class="fs-4 mb-3">
+                        Order Panel
+                    </div>
+                    <OrderTable 
+                        orderData={assignedOrderData} 
+                        onOrderStatusChanged={props.onOrderStatusChanged}
+                        assigned={true}
+                    />
+                 </>
+                
+                ||
+                <div class="fs-4 fw-light ms-3">
+                    NO ORDERS TO SHOW
+                </div>
+            }
+           
+            
 
             <AssigmentPopup
                 show={assignmentShow}

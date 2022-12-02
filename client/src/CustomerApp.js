@@ -100,13 +100,13 @@ function ItemsDisplay(props){
 
     return (
         <>
-            <div class="row w-100 justify-content-between mx-auto">
+            <div class="row w-100 justify-content-left mx-auto">
                 {
                     itemRenderData.map(item => {
                         return (
                             <>
-                                <div class="col-md-4">
-                                    <div class="mb-2">
+                                <div class="col-md-4 h-100">
+                                    <div class="mb-2 fw-bolder">
                                         {item.Name}
                                     </div>
 
@@ -118,7 +118,7 @@ function ItemsDisplay(props){
                                       
                                     }
 
-                                    <div class="mb-2">
+                                    <div class="mb-2 fw-light">
                                         {item.Description}
                                     </div>
 
@@ -145,7 +145,7 @@ function ItemsDisplay(props){
             </div>
             
             {
-                props.itemData.length == 0 && props.searchTerm &&
+               itemRenderData.length == 0 && props.searchTerm &&
                 <>
                     <div class="fw-light">
                         <p>

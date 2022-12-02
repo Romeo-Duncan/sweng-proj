@@ -52,5 +52,13 @@ export default {
         return await HttpClient.post("/cancel-order",{
             orderId : orderId,
         }) 
+    },
+
+    async getAssignedOrders(employeeId){
+        return await HttpClient.post("/get-assigned-orders", {
+            employeeId : employeeId
+        }, "ordersData").then((ordersData) => {
+            return JSON.parse(ordersData)
+        })
     }
 }

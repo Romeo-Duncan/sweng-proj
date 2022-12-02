@@ -5,10 +5,11 @@ import "./App.css"
 function EmployeeApp(props){
     return(
         <>
-            <div class="container dashboard-container">
-                EMPLOYEE APPLICATION 
-            </div>
-            <ViewAssignedOrders/>
+            <div class="container dashboard-container pt-5">
+                <div class="fit-content">
+                    <ViewAssignedOrders userId={props.userId}/>
+                </div>                
+            </div>            
         </>
     )
 }

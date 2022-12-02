@@ -25,3 +25,11 @@
     border-color: transparent;
     background-color: transparent;
 }
+
+.fit-content{
+    height: fit-content;
+}
+
+.vertical-overflow {
+    overflow-y: visible !important;
+}

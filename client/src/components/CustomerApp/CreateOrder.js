@@ -54,8 +54,8 @@ function CreateOrder(props){
                 <div class="ms-3 me-3 mb-5">
                     <div class="row mb-2">
                         <div class="row justify-content-between w-100 mx-auto">
-                            <div class="col-8 fs-6">
-                                Cart Total = {cartTotal}
+                            <div class="col-8 fs-3 fw-bolder">
+                                Cart Total : ${cartTotal}
                             </div>
                             
                             <div class="col-4 d-flex justify-content-end">
@@ -71,14 +71,15 @@ function CreateOrder(props){
                                 </div>
                             </div>
                         </div>              
-                    </div>                
+                    </div>  
+                    <hr class="mt-5"></hr>              
                 </div>
                 :
                 <div class="fs-4 fw-light ms-3">
                    YOUR CART IS EMPTY
                 </div>
             }
-
+            
             <div class="ms-3 me-3">
                 {
                     props.cartData.map((item, index) => {

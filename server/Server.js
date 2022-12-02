@@ -42,6 +42,7 @@ function createAppRoutes(){
     app.post("/api/update-order-status", createRequestCallback(OrderController.onUpdateStatusRequest))
     app.post("/api/assign-order", createRequestCallback(OrderController.onAssignEmployeeRequest))
     app.post("/api/cancel-order", createRequestCallback(OrderController.onCancelOrderRequest))
+    app.post("/api/get-assigned-orders", createRequestCallback(OrderController.getAssignedOrders))
 }
 
 function initControllers(client){

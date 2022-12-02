@@ -38,9 +38,9 @@ function ViewCustOrders(props) {
             <Table responsive striped bordered hover>
                 <thead>
                     <tr>
-                    <th>Tracking Number </th>
-                    <th>Date Placed</th>
-                    <th>Status</th>
+                    <th class="fw-bolder">Tracking Number </th>
+                    <th class="fw-bolder">Date Placed</th>
+                    <th class="fw-bolder">Status</th>
                     </tr>
                 </thead>
 
@@ -49,9 +49,9 @@ function ViewCustOrders(props) {
                         orderData.map(order => {
                             return(
                                 <tr>
-                                    <td>{order.orderId}</td>
-                                    <td>{(new Date(order.time)).toLocaleString()}</td>
-                                    <td>{Statuses[order.status]}</td>
+                                    <td class="fw-light">{order.orderId}</td>
+                                    <td class="fw-light">{(new Date(order.time)).toLocaleString()}</td>
+                                    <td class="fw-light">{Statuses[order.status]}</td>
                                     <td>
                                         <Button 
                                             variant='primary rounded-pill fw-bold'
@@ -64,7 +64,7 @@ function ViewCustOrders(props) {
                                         </Button>  
                                     </td>
                                     {
-                                        order.status < 2
+                                        order.status < 1
                                         &&
                                         <td>
                                             <Button 

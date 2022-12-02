@@ -131,7 +131,7 @@ function LoginApp() {
         <Routes>
           <Route path='/' element={<LoginComponent onLoggedIn = {onLoggedIn} userType = {userType}/>}/>                     
           <Route path='admin' element={<><LogoutComponent onLoggedOut = {onLoggedOut} userType = {userType}/><AdminApp/></>}/>
-          <Route path='employee' element={<><LogoutComponent onLoggedOut = {onLoggedOut} userType = {userType}/><EmployeeApp/></>}/>
+          <Route path='employee' element={<><LogoutComponent onLoggedOut = {onLoggedOut} userType = {userType}/><EmployeeApp userId={userId}/></>}/>
           <Route path='customer' element={<><LogoutComponent onLoggedOut = {onLoggedOut} userType = {userType}/><CustommerApp userId={userId}/></>}/>
         </Routes>        
       </div>

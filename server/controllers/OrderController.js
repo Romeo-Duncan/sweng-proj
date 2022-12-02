@@ -68,6 +68,17 @@ class OrderController extends BaseController{
             })
         })
     }
+
+    async getAssignedOrders(req, res){
+        const body = req.body
+        const employeeId = body.employeeId
+
+        OrdersDAO.getAssignedOrders(employeeId).then((ordersData) => {
+            res.json({
+                ordersData : JSON.stringify(ordersData)
+            })
+        })
+    }
 }
 
 export default new OrderController(OrdersDAO)

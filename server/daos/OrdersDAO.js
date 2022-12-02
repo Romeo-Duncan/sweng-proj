@@ -8,7 +8,8 @@ class OrdersDAO extends BaseDAO {
             userId : userId,
             orderData : orderData,
             status : 0, 
-            time : time
+            time : time,
+            employees : []
         })
     }
 
@@ -58,6 +59,24 @@ class OrdersDAO extends BaseDAO {
                 }
             },
             { $unset : [ "customerData._id", "customerData.type", "customerData.password" ] },
+            {
+                $lookup : {
+                    from: "Users",
+                    let: {
+                        employeeIds : "$employees",
+                    },
+                    pipeline: [
+                        {$match : { 
+                            $expr: {
+                                $in: [ { $toString: "$_id" }, "$$employeeIds" ]
+                            }                
+                        }},
+
+                        { $unset : [ "password", "_id", "type"] }
+                    ],
+                    as: "employeeData"
+                }
+            },
             { $unwind : "$orderData"},
             {
                 $lookup : {
@@ -82,7 +101,8 @@ class OrdersDAO extends BaseDAO {
                   status: {$first: "$status"},
                   customerData: {$first: "$customerData"},
                   employees: {$first: "$employees"},
-                  orderData: { $push: { $first: "$orderData" } }
+                  orderData: { $push: { $first: "$orderData" } },
+                  employeeData: {$first: "$employeeData"}
                 }
             },
             { $sort : { status : 1, time : -1 } },          
@@ -114,7 +134,73 @@ class OrdersDAO extends BaseDAO {
     }
 
     async getAssignedOrders(employeeId){
-        return
+        return await this.collection.aggregate([
+            { $match : { 
+                $expr: {
+                    $in: [ employeeId, "$employees" ] 
+                }                
+            } },
+            { $addFields : { userObjectId : { $toObjectId: "$userId"} } }, 
+            {
+                $lookup : {
+                    from: "Users",
+                    localField: "userObjectId" ,
+                    foreignField: "_id",
+                    as: "customerData"
+                }
+            },
+            { $unset : [ "customerData._id", "customerData.type", "customerData.password" ] },
+            {
+                $lookup : {
+                    from: "Users",
+                    let: {
+                        employeeIds : "$employees",
+                    },
+                    pipeline: [
+                        {$match : { 
+                            $expr: {
+                                $in: [ { $toString: "$_id" }, "$$employeeIds" ]
+                            }                
+                        }},
+
+                        { $unset : [ "password", "_id", "type"] }
+                    ],
+                    as: "employeeData"
+                }
+            },
+            { $unwind : "$orderData"},
+            {
+                $lookup : {
+                    from: "Inventory",
+                    let: {
+                        itemId : { $toObjectId: "$orderData.itemId"},
+                        items: "$orderData"
+                    },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_id", "$$itemId" ] } } },
+                        { $unset : [ "Description", "Category", "_id", "Ingredients"] },
+                        { $replaceRoot: { newRoot: { $mergeObjects: ["$$items", "$$ROOT"] } } }
+                    ],
+                    as: "orderData"
+                }
+            },            
+            {
+                $group: {
+                  _id: "$_id",
+                  userId: { $first: "$userId" },
+                  time: { $first: "$time" },
+                  status: {$first: "$status"},
+                  customerData: {$first: "$customerData"},
+                  employees: {$first: "$employees"},
+                  employeeData: {$first: "$employeeData"},
+                  orderData: { $push: { $first: "$orderData" } }
+                }
+            },
+            
+            { $sort : { status : 1, time : -1 } },          
+            { $addFields : { orderId : "$_id" } },    
+            { $unset : [ "_id", "userId", "employees","userObjectId" ] },
+        ]).toArray()
     }
 
     async cancelOrder(orderId){
