@@ -1,3 +1,5 @@
+import ViewAssignedOrders from "./components/EmployeeApp/ViewAssignedOrders.js"
+
 import "./App.css"
 
 function EmployeeApp(props){
@@ -6,6 +8,7 @@ function EmployeeApp(props){
             <div class="container dashboard-container">
                 EMPLOYEE APPLICATION 
             </div>
+            <ViewAssignedOrders/>
         </>
     )
 }

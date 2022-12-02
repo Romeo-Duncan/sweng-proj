@@ -18,8 +18,7 @@ function UserConfig(props){
         UserService.getUsersData().then((data) => {
             let renderData = []
 
-            if (data.userData){
-                
+            if (data.userData){                
                 let wasLastEmployee = true
 
                 function createUserHeading(heading){
@@ -58,12 +57,6 @@ function UserConfig(props){
                                         <Button  bsPrefix="btn btn-outline-secondary w-75" >******</Button>
                                     </OverlayTrigger>   
                                 </div>
-                                {/* <div class="col-2">
-                                    <TrashIcon class = "h-100 w-100"/>                                   
-                                    <button type="button" class="btn btn-outline-danger me-auto delete-button">
-                                        
-                                    </button>                                                                             
-                                </div> */}
                             </div>              
                         </div>
                     )

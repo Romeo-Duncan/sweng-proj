@@ -1,5 +1,7 @@
 import BaseDAO from "./BaseDAO.js"
 
+import {ObjectId} from "mongodb"
+
 class InventoryDAO extends BaseDAO {
     async getItems(){
         const itemData = await this.collection.aggregate([

@@ -20,7 +20,11 @@ class UsersDAO extends BaseDAO {
     }
 
     async verifyLoginRequest(username, password) {        
-        const documentsWithLoginInfo = await this.collection.distinct("type", { username : username, password : password })
+        const documentsWithLoginInfo = await this.collection.aggregate([
+            { $match : { username : username, password : password } },
+            { $addFields: { userId : "$_id" } },
+            { $unset : [ "_id" ] }
+        ]).toArray()
 
         return documentsWithLoginInfo.length > 0 && documentsWithLoginInfo[0]
     }
@@ -28,7 +32,8 @@ class UsersDAO extends BaseDAO {
     async getUsersData(){
         return this.collection.aggregate([
             { $match : { $or: [ { type : "Employee" }, { type : "Customer" } ] } },
-            { $sort : { type : -1 } },            
+            { $sort : { type : -1 } }, 
+            { $addFields: { userId : "$_id" } },          
             { $unset : [ "_id" ] }
         ]).toArray()
     }

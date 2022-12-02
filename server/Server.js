@@ -6,6 +6,7 @@ import Cors from "cors"
 
 //Controllers
 import InventoryController from "./controllers/InventoryController.js"
+import OrderController from "./controllers/OrderController.js"
 import UserController from "./controllers/UserController.js"
 
 Dotenv.config()
@@ -34,10 +35,17 @@ function createAppRoutes(){
     app.post("/api/log-in", createRequestCallback(UserController.onLoginRequest))
 
     app.post("/api/get-items", createRequestCallback(InventoryController.onGetItemsRequest))
+
+    app.post("/api/create-order", createRequestCallback(OrderController.onCreateOrderRequest))
+    app.post("/api/get-cust-orders", createRequestCallback(OrderController.onGetCustOrdersRequest))
+    app.post("/api/get-all-orders", createRequestCallback(OrderController.onGetAllOrdersRequest))
+    app.post("/api/update-order-status", createRequestCallback(OrderController.onUpdateStatusRequest))
+    app.post("/api/assign-order", createRequestCallback(OrderController.onAssignEmployeeRequest))
+    app.post("/api/cancel-order", createRequestCallback(OrderController.onCancelOrderRequest))
 }
 
 function initControllers(client){
-    const controllers = [UserController, InventoryController]
+    const controllers = [UserController, InventoryController, OrderController]
 
     controllers.forEach(
         (controller) => {

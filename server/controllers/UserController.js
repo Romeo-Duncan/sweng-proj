@@ -7,9 +7,11 @@ class UsersController extends BaseController{
         const username = body.username
         const password = body.password
         
-        UsersDAO.verifyLoginRequest(username, password).then(userType => {
+        UsersDAO.verifyLoginRequest(username, password).then(userData => {
             res.json({
-                userType : userType || null
+                userType : userData.type || null,
+                userId : userData.userId || null
+
             })
         })      
     }

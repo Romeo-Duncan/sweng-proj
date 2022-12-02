@@ -6,7 +6,10 @@ import CustommerApp from './CustomerApp.js'
 import EmployeeApp from './EmployeeApp.js'
 import AdminApp from './AdminApp.js'
 
+import logo from "./assets/logo.svg"
+
 import "./LoginApp.css"
+import "./App.css"
 
 function LoginComponent(props){
   const [isLoginInfoWrong, setIsLoginInfoWrong] = useState(false)
@@ -31,7 +34,7 @@ function LoginComponent(props){
       UserService.verifyLoginRequest(username, password)
       .then(data => {
         if (data.userType){
-          props.onLoggedIn(data.userType)
+          props.onLoggedIn(data.userType, data.userId)
         }else{
           setIsLoginInfoWrong(true)
         }
@@ -77,7 +80,7 @@ function LoginComponent(props){
                 || (!isPasswordEmpty && <>*password field is empty</>)       
               }              
           </div> 
-          <button class="log-in-button noto-font weight-900 " onClick={onLogInRequested} >CONTINUE</button>
+          <button class="log-in-button noto-font weight-900 btn btn-outline-primary" onClick={onLogInRequested} >CONTINUE</button>
         </div>         
         </div>             
       </div>
@@ -91,24 +94,35 @@ function LogoutComponent(props){
       {
         !props.userType &&  <Navigate to='/'/>
       }
-      <div class="container mb-5">
-        <button class="log-out-button" onClick={props.onLoggedOut} >SIGN OUT</button>
-      </div>      
+      <div class="container mb-5 mt-5 log-out-container">
+        <div class="row justify-content-between w-100 mx-auto">
+          <div class="col-6 fs-6"><img src={logo} alt="logo" /></div>
+          <div class="col-6 d-flex justify-content-end">
+            <button class="log-out-button btn btn-outline-dark" onClick={props.onLoggedOut} >SIGN OUT</button>
+          </div>
+        </div>        
+      </div>
+      <hr class="mb-5"/>     
     </>
   )
 }
 
 function LoginApp() {
   const [userType, setUserType] = useState(sessionStorage.getItem("userType") || null)
+  const [userId, setUserId] = useState(sessionStorage.getItem("userId") || null)
 
-  function onLoggedIn(userType){
+  function onLoggedIn(userType, userId){
     sessionStorage.setItem("userType", userType)
+    sessionStorage.setItem("userId", userId)
     setUserType(userType)
+    setUserId(userId)
   }
 
   function onLoggedOut(){
     sessionStorage.setItem("userType", null)
+    sessionStorage.setItem("userId", null)
     setUserType(null)
+    setUserId(null)
   }
   
   return (
@@ -118,7 +132,7 @@ function LoginApp() {
           <Route path='/' element={<LoginComponent onLoggedIn = {onLoggedIn} userType = {userType}/>}/>                     
           <Route path='admin' element={<><LogoutComponent onLoggedOut = {onLoggedOut} userType = {userType}/><AdminApp/></>}/>
           <Route path='employee' element={<><LogoutComponent onLoggedOut = {onLoggedOut} userType = {userType}/><EmployeeApp/></>}/>
-          <Route path='customer' element={<><LogoutComponent onLoggedOut = {onLoggedOut} userType = {userType}/><CustommerApp/></>}/>
+          <Route path='customer' element={<><LogoutComponent onLoggedOut = {onLoggedOut} userType = {userType}/><CustommerApp userId={userId}/></>}/>
         </Routes>        
       </div>
     </Router>

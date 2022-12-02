@@ -22,11 +22,8 @@
 .log-in-button {
     width: 7rem;
     height: 2.5rem;    
-    border-color: transparent;
-    border-radius: 0.5rem;
-    background-color: #1A73E8;
+    border-radius: 5rem;
     font-weight: bold;
-    color: white;
     font-size: 0.8rem;
     margin-left: 1.5rem;
 }
@@ -66,15 +63,15 @@
 .log-out-button {
     width: 7rem;
     height: 2.5rem;    
-    border-color: transparent;
     border-radius: 10rem;
     background-color: #1a73e800;
-    border:1px solid rgb(255, 0, 0);
+    border:1px solid;
     font-weight: bold;
-    color: rgb(255, 0, 0);
     font-size: 0.8rem;
-    margin-left: 1.5rem;
-    margin-top: 1.5rem;
+}
+
+.log-out-container {
+    max-width: 60rem;
 }
 
 @media (max-width: 576px)  {

@@ -9,7 +9,7 @@ export default {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data || {}),
       })
       .then((res) => res.json())
       .then((data) => resolve(resField && data[resField] || data))
