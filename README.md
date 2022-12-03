@@ -7,3 +7,8 @@ To start the client navigate to the root directory of the project:
 To start the server navigate to the root directory of the project:
 1) type cd server
 2) type nodemon server
+
+Login info for Admin account
+
+username: Admin
+password:password
